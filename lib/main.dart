@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getxapptest/counter_controller.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 void main() {
   // Register Controller Once in Memory
-  Get.put(CounterController());
+  Get.put<ICounterController>(CounterController());
 
   runApp(MyApp());
 }
@@ -30,7 +31,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Register the controller (if not already registered)
-    final CounterController controller = Get.put(CounterController());
+    final ICounterController controller = Get.find<ICounterController>();
 
     return Scaffold(
       appBar: AppBar(title: Text('Home Screen')),
@@ -55,23 +56,16 @@ class HomeScreen extends StatelessWidget {
 
             // Animation for a growing and shrinking circular shape
             SizedBox(height: 40),
-            TweenAnimationBuilder(
-              duration: Duration(seconds: 22),
-              tween: Tween<double>(
-                  begin: 50, end: 150), // Starting and ending size
-              onEnd: () {
-                // Reverse the animation to make it loop forever
-              },
-              builder: (context, size, child) {
-                return Container(
-                  width: size,
-                  height: size,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    color: Colors.blue,
-                  ),
-                );
-              },
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: LoadingIndicator(
+                  indicatorType: Indicator.ballPulse, /// Required, The loading type of the widget
+                  colors: const [Colors.white],       /// Optional, The color collections
+                  strokeWidth: 2,                     /// Optional, The stroke of the line, only applicable to widget which contains line
+                  backgroundColor: Colors.black,      /// Optional, Background of the widget
+                  pathBackgroundColor: Colors.black   /// Optional, the stroke backgroundColor
+              ),
             ),
           ],
         ),

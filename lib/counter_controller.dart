@@ -1,16 +1,20 @@
 import 'package:get/get.dart';
-import 'package:dio/dio.dart'; // Import Dio
-//import 'package:native_dio_adapter/native_dio_adapter.dart'; // Import native adapter
+import 'package:dio/dio.dart';
+import 'package:native_dio_adapter/native_dio_adapter.dart';
 
-class CounterController extends GetxController {
-  var count = 0.obs; // Observable variable
+abstract class ICounterController extends GetxController {
+  var count = 0.obs;
+
+  Future<void> fetchDataFromApi();
+}
+
+class CounterController extends ICounterController {
   late Dio dio; // Dio instance
 
   // Constructor
   CounterController() {
     print('CounterController is being created!');
     dio = Dio();
-    /*
     dio.httpClientAdapter = NativeAdapter(
       createCupertinoConfiguration: () =>
           URLSessionConfiguration.ephemeralSessionConfiguration()
@@ -18,7 +22,6 @@ class CounterController extends GetxController {
             ..allowsConstrainedNetworkAccess = true
             ..allowsExpensiveNetworkAccess = true,
     ); // Set the native Dio adapter
-    */
   }
 
   // Method to fetch data from a remote API using Dio with native adapter
@@ -32,7 +35,7 @@ class CounterController extends GetxController {
 
         // Parse the response and get the number of rows returned
         final List<dynamic> data = response.data;
-        count.value = data.length; // Set count to the number of posts
+        count.value += data.length; // Set count to the number of posts
       } else {
         // Handle the error when the request fails
         print('Failed to load data');
